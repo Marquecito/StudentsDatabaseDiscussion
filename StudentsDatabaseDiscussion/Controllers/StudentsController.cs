@@ -45,7 +45,10 @@ namespace StudentsDatabaseDiscussion.Controllers
             {
                 _STUDENTS.STATUS = true;
 
-                entities.TBL_STUDENTS.Add(_STUDENTS);
+                if (!entities.TBL_STUDENTS.Any(verify => verify.STUDENT_NUMBER == _STUDENTS.STUDENT_NUMBER))
+                {
+                    entities.TBL_STUDENTS.Add(_STUDENTS);
+                }
                 
                 if(entities.SaveChanges() >= 1)
                 {
@@ -100,14 +103,19 @@ namespace StudentsDatabaseDiscussion.Controllers
                     return Json(new { msg = "Student not found" });
                 }
 
-                student.STUDENT_NAME = studentName;
-                student.STUDENT_ADDRESS = studentAddress;
-                student.STUDENT_NUMBER = studentIdNumber;
-                student.STATUS = isActive;
-                student.STUDENT_YEAR_LEVEL= studentYearLevel;
-                student.STUDENT_CONTACT_NUMBER = studentContactNumber;
+                if (!entities.TBL_STUDENTS.Any(verify =>
+                        verify.STUDENT_NUMBER == studentIdNumber && verify.ID != studentId))
+                {
 
-                
+                    student.STUDENT_NAME = studentName;
+                    student.STUDENT_ADDRESS = studentAddress;
+                    student.STUDENT_NUMBER = studentIdNumber;
+                    student.STATUS = isActive;
+                    student.STUDENT_YEAR_LEVEL = studentYearLevel;
+                    student.STUDENT_CONTACT_NUMBER = studentContactNumber;
+
+                }
+
                 if(entities.SaveChanges() >= 1)
                 {
                     return Json(new { msg = "Modified student details" });
